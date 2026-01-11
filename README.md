@@ -1,30 +1,68 @@
 # Corporate Banking – Loan Pricing & Deal Approval System
 
+---
+
 ## Project Overview
 
-Corporate banking teams process loan requests for enterprise and mid-market clients. Traditional workflows rely on spreadsheets and emails, leading to inconsistent pricing, lack of audit trails, unauthorized edits, and poor visibility.
+Corporate banking teams process high‑value loan requests for enterprise and mid‑market clients. Traditional workflows rely on spreadsheets, emails, and manual approvals, leading to:
 
-This project delivers a **secure, role-based, centralized Loan Pricing & Deal Approval System** built using **Angular, Spring Boot, MongoDB, and Docker**. It supports end-to-end loan lifecycle management with enterprise-grade security and auditability.
+* Inconsistent loan pricing
+* Lack of audit trails
+* Unauthorized data modifications
+* Poor visibility into deal status
+
+This project delivers a **secure, centralized, role‑based Loan Pricing & Deal Approval System** built using **Angular, Spring Boot, MongoDB, Apache Kafka, Docker, and AWS**. The system supports the complete loan lifecycle with **enterprise‑grade security, auditability, scalability, and cloud deployment readiness**.
 
 ---
 
 ## Technology Stack
 
-* **Frontend:** Angular 18 (SPA)
-* **Backend:** Spring Boot 3.x (Java 17)
-* **Database:** MongoDB
-* **Security:** JWT Authentication + Role-Based Access Control (RBAC)
-* **Containerization:** Docker & Docker Compose
+### Frontend
+* Angular 18 (Single Page Application)
+* NGINX (Dockerized static hosting)
+
+### Backend
+* Spring Boot 3.x (Java 17)
+* Spring Security + JWT
+* RESTful APIs
+
+### Database
+* MongoDB
+
+### Messaging & Events
+* Apache Kafka
+* Zookeeper
+
+### Security
+* JWT Authentication
+* Role‑Based Access Control (RBAC)
+
+### Cloud & DevOps
+* Docker & Docker Compose
+* AWS EC2
+* AWS ECR (Elastic Container Registry)
 
 ---
 
 ## System Architecture
 
-* Angular SPA communicates with Spring Boot REST APIs
-* Spring Boot handles business logic, validations, and security
-* MongoDB stores users, loans, and audit history
-* JWT provides stateless authentication
-* Docker Compose orchestrates frontend, backend, and database containers
+```
+User
+  ↓
+Angular SPA (NGINX)
+  ↓
+Spring Boot REST APIs
+  ↓
+MongoDB
+  ↓
+Kafka (Event Streaming)
+```
+
+* Angular communicates with Spring Boot via REST APIs
+* Spring Boot enforces business rules, workflow validation, and security
+* MongoDB stores users, loans, and audit data
+* Kafka publishes deal lifecycle events
+* AWS hosts the complete containerized system
 
 ---
 
@@ -33,15 +71,16 @@ This project delivers a **secure, role-based, centralized Loan Pricing & Deal Ap
 ### USER (Relationship Manager)
 
 * Create loan requests (DRAFT)
-* Edit non-sensitive fields while in DRAFT
+* Edit non‑sensitive fields in DRAFT
 * Perform loan pricing calculation
-* Submit loan for approval
-* View loan list and details
+* Submit loans for approval
+* View loan list and loan details
 
 ### ADMIN (Credit Manager)
 
 * Review submitted loans
-* Approve or reject loans
+* Move loans through approval stages
+* Approve or reject deals
 * Edit sensitive fields (sanctioned amount, approved interest rate)
 * Soft delete loans
 * Manage users
@@ -52,17 +91,17 @@ This project delivers a **secure, role-based, centralized Loan Pricing & Deal Ap
 ## Authentication & Authorization
 
 * Login using email and password
-* Passwords hashed using BCrypt
-* JWT contains userId, role, and expiration
-* Angular HTTP Interceptor attaches JWT to all requests
-* AuthGuard and RoleGuard protect routes on frontend
-* Backend enforces role and status-based authorization
+* Passwords encrypted using BCrypt
+* JWT token contains userId, role, and expiration
+* Angular HTTP Interceptor attaches JWT to every request
+* AuthGuard and RoleGuard protect frontend routes
+* Backend enforces role‑based and status‑based authorization
 
 ---
 
 ## Loan Workflow
 
-### Status Flow
+### Loan Status Flow
 
 * DRAFT
 * SUBMITTED
@@ -70,24 +109,51 @@ This project delivers a **secure, role-based, centralized Loan Pricing & Deal Ap
 * APPROVED
 * REJECTED
 
-### Transitions
+### Allowed Transitions
 
-* USER: DRAFT → SUBMITTED
-* ADMIN:
-
+* **USER:** DRAFT → SUBMITTED
+* **ADMIN:**
   * SUBMITTED → UNDER_REVIEW
   * UNDER_REVIEW → APPROVED / REJECTED
 
-All transitions are validated in the backend service layer.
+All transitions are strictly validated in the backend service layer.
 
 ---
 
-## Loan Pricing
+## Loan Pricing Engine
 
-* Pricing calculated using predefined formula
-* Based on base rate, credit rating, and tenure
+* Pricing calculated using a predefined formula
+* Inputs include base rate, credit rating, and tenure
 * USER cannot override pricing values
-* Backend re-validates pricing to prevent tampering
+* Backend re‑calculates pricing to prevent tampering
+
+---
+
+## Kafka Integration (Event‑Driven Architecture)
+
+### Kafka Topics
+
+* `deal-events`
+
+### Published Events
+
+* `DEAL_CREATED`
+* `DEAL_SUBMITTED`
+* `DEAL_STAGE_UPDATED`
+* `DEAL_APPROVED`
+* `DEAL_REJECTED`
+
+### Event Flow
+
+* Events are published **after successful database commits**
+* Producer sends deal lifecycle events to Kafka
+* Consumer listens to events and logs / processes them
+
+This design enables:
+
+* Asynchronous processing
+* Future integrations (notifications, analytics, reporting)
+* Decoupled microservice‑ready architecture
 
 ---
 
@@ -95,38 +161,39 @@ All transitions are validated in the backend service layer.
 
 ### Audit Trail
 
-Each loan maintains an audit history containing:
+Each loan maintains a complete audit history containing:
 
 * Action performed
-* Performed by
+* Performed by (user)
 * Timestamp
 * Optional comments
 
 ### Soft Delete
 
-* Loans are marked as deleted instead of being removed
-* Preserves historical data for compliance
-* Deleted loans hidden from standard views
+* Loans are marked as deleted (not physically removed)
+* Ensures regulatory compliance
+* Deleted loans hidden from normal views
+* Full history preserved
 
 ---
 
 ## Backend Design
 
 * Layered architecture: Controller → Service → Repository
-* DTOs used to avoid exposing entities
-* Bean Validation for input validation
+* DTO‑based request/response handling
+* Bean Validation (`@Valid`)
 * Global exception handling using `@ControllerAdvice`
-* Pagination implemented using Spring Data `Pageable`
+* Pagination and sorting using Spring Data `Pageable`
 
 ---
 
 ## Frontend Design
 
-* Feature-based modules: auth, loans, admin, shared
-* Reactive Forms for authentication
-* Role-based UI rendering using `*ngIf`
+* Feature‑based modules: auth, loans, admin, shared
+* Reactive Forms for authentication and data entry
+* Role‑based UI rendering using `*ngIf`
 * JWT interceptor for API calls
-* Guards for route protection
+* Route Guards for authentication and authorization
 
 ---
 
@@ -136,95 +203,80 @@ Each loan maintains an audit history containing:
 
 * JUnit 5 & Mockito
 * Service and controller tests
-* JaCoCo coverage ≥ 80%
+* Code coverage ≥ 80% (JaCoCo)
 
 ### Frontend
 
 * Jasmine & Karma
-* Tests for services, guards, and forms
+* Unit tests for services, guards, and forms
 * Coverage ≥ 70%
 
 ---
 
 ## Prerequisites (Local Setup)
 
-Before running the project, ensure the following are installed:
+Ensure the following are installed:
 
-* Node.js (v18+ recommended)
-* Angular CLI (v18)
+* Node.js 18+
+* Angular CLI 18
 * Java JDK 17
 * Maven 3.9+
-* MongoDB (local) OR Docker
+* MongoDB (local) or Docker
 * Docker & Docker Compose
 
 ---
 
-## Getting Started (After Cloning the Repository)
-
-Follow these steps **after downloading or cloning the GitHub repository**.
+## Getting Started
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/SiddhuChaparthi/LoanPricing-and-Dealing.git
-cd Loan-Pricing-Dealing
+git clone https://github.com/SiddhuChaparthi/Loan-pricing-and-dealing-system.git
 ```
 
-### 2. Verify Project Structure
-
-Ensure the following structure exists:
+### 2. Project Structure
 
 ```
 frontend/
 backend/
 docker-compose.yml
 .gitignore
+README.md
 ```
-
-If this structure is present, you are ready to proceed.
-
-### 3. Choose How You Want to Run the Project
-
-You can run the project in **two ways**:
-
-* **Option 1:** Run services individually (without Docker)
-* **Option 2:** Run everything using Docker Compose (recommended)
 
 ---
 
-## Running the Project (Option 1: Without Docker)
+## Running the Project (Without Docker)
 
-### 1. Run MongoDB
-
-Start MongoDB locally on default port:
+### 1. Start MongoDB
 
 ```
 mongodb://localhost:27017
 ```
 
-### 2. Run Backend (Spring Boot)
+### 2. Run Backend
 
-```
+```bash
 cd backend
 mvn clean install
 mvn spring-boot:run
 ```
 
-Backend will start on:
+Backend runs on:
 
 ```
 http://localhost:9999
 ```
 
-### 3. Run Frontend (Angular)
+### 3. Run Frontend
 
-```
+```bash
 cd frontend
 npm install
 ng serve
 ```
 
-Frontend will be available at:
+Frontend runs on:
 
 ```
 http://localhost:4200
@@ -232,72 +284,87 @@ http://localhost:4200
 
 ---
 
-## Running the Project (Option 2: Dockerized – Recommended)
+## Running the Project (Dockerized – Recommended)
 
-### 1. Build and Run Containers
+### 1. Build & Start Containers
 
-From project root:
-
-```
+```bash
 docker compose up --build
 ```
 
-### 2. Access Applications
+### 2. Access Services
 
-* Frontend: [http://localhost:4200](http://localhost:4200)
-* Backend APIs: [http://localhost:9999](http://localhost:9999)
-* MongoDB: internal Docker network
+* Frontend: http://localhost:4200
+* Backend APIs: http://localhost:9999
+* MongoDB: Docker internal network
+* Kafka & Zookeeper: Docker internal network
 
 ### 3. Stop Containers
 
-```
+```bash
 docker compose down
 ```
 
 ---
 
-## Docker Setup Summary
+## AWS Deployment
 
-* Angular served via Nginx container
-* Spring Boot runs in its own container
-* MongoDB container with volume persistence
-* Docker Compose manages service networking
+### AWS Services Used
+
+* EC2 – Application hosting
+* ECR – Docker image registry
+
+### Deployment Flow
+
+1. Build Docker images locally
+2. Push images to Amazon ECR
+3. Pull images on EC2 instance
+4. Run containers using Docker Compose
+
+The system is fully cloud‑ready and scalable.
 
 ---
 
 ## Environment Configuration
 
-* Application properties managed via `application.properties`
-* Environment variables supported for Docker deployments
-* JWT secrets configurable via environment variables
+* `application.properties` supports environment variables
+* JWT secrets externalized for production
+* Kafka broker and MongoDB URLs configurable
 
 ---
 
 ## Production Considerations
 
-* HTTPS using reverse proxy (Nginx)
+* HTTPS via reverse proxy (NGINX)
 * Secure secret management
 * Health checks and restart policies
-* Centralized logging and monitoring
-* CI/CD-ready Docker setup
+* Centralized logging
+* CI/CD pipeline compatibility
 
 ---
 
 ## Key Highlights
 
-* Enterprise-grade approval workflow
-* Strong backend security with RBAC
-* Complete audit trail
-* Dockerized deployment
-* Interview-ready full-stack system
+* Enterprise‑grade approval workflow
+* Secure JWT‑based RBAC
+* Event‑driven architecture with Kafka
+* Full audit trail and compliance support
+* Dockerized & AWS‑deployable
+* Interview‑ready real‑world system
 
 ---
 
 ## Interview Note
 
-This project demonstrates real-world enterprise patterns including:
+This project demonstrates real‑world enterprise patterns including:
 
 * Secure authentication and authorization
-* Workflow-based state management
-* Clean architecture and DTO usage
-* Docker-based deployment
+* Workflow‑driven state management
+* Event‑driven systems with Kafka
+* Clean layered architecture with DTOs
+* Docker & AWS cloud deployment
+
+---
+
+**Author:** Siddhu Chaparthi
+
