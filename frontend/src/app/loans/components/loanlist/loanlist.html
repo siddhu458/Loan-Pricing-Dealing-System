@@ -1,0 +1,175 @@
+<div class="dashboard-container">
+
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h2>Loan Requests</h2>
+
+    <button
+      class="primary-btn"
+      *ngIf="!isAdmin"
+      (click)="goToCreate()">
+      + Create Loan
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" *ngIf="!(loans$ | async)">
+    Loading loan data...
+  </div>
+
+  <!-- Table -->
+  <div class="table-card" *ngIf="(loans$ | async) as loans">
+
+    <div *ngIf="loans.length === 0" class="empty">
+      No loan requests found
+    </div>
+
+    <table *ngIf="loans.length > 0">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Rate (%)</th>
+          <th>Tenure</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let loan of loans">
+          <td>{{ loan.clientName }}</td>
+          <td>{{ loan.loanType }}</td>
+          <td>₹ {{ loan.requestedAmount | number }}</td>
+          <td>{{ loan.proposedInterestRate }}</td>
+          <td>{{ loan.tenureMonths }}</td>
+
+          <!-- Status Badge -->
+          <td>
+            <span class="status"
+              [ngClass]="loan.status?.toLowerCase()">
+              {{ loan.status }}
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td class="actions">
+
+            <!-- Debug info (remove in production) -->
+            <div style="font-size: 10px; color: #666; margin-bottom: 5px;">
+              Role: {{ isAdmin ? 'ADMIN' : (isUser ? 'USER' : 'UNKNOWN') }} | 
+              Status: {{ loan.status }} | 
+              Rate: {{ loan.proposedInterestRate || 'NULL' }}
+            </div>
+
+            <button
+              class="btn submit"
+              *ngIf="isUser && loan.status === 'DRAFT'"
+              [disabled]="!loan.proposedInterestRate || loan.proposedInterestRate === 0"
+              (click)="submitLoan(loan.id!)">
+              Submit
+            </button>
+
+            <button
+              class="btn review"
+              *ngIf="isAdmin && loan.status === 'SUBMITTED'"
+              (click)="reviewLoan(loan.id!)">
+              Review
+            </button>
+
+            <button
+              class="btn approve"
+              *ngIf="isAdmin && loan.status === 'UNDER_REVIEW'"
+              (click)="approveLoan(loan.id!)">
+              Approve
+            </button>
+
+            <button
+              class="btn reject"
+              *ngIf="isAdmin && loan.status === 'UNDER_REVIEW'"
+              (click)="rejectLoan(loan.id!)">
+              Reject
+            </button>
+
+            <button
+              class="btn warning"
+              *ngIf="isUser && loan.status === 'DRAFT' && (!loan.proposedInterestRate || loan.proposedInterestRate === 0)"
+              (click)="openPricing(loan)">
+              Calculate Price
+            </button>
+
+            <button
+              *ngIf="isAdmin && loan.status === 'DRAFT'"
+              (click)="deleteLoan(loan.id)">
+              Delete
+            </button>
+
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <div class="pagination-info">
+        Showing {{ currentPage * pageSize + 1 }} to 
+        {{ Math.min((currentPage + 1) * pageSize, totalElements) }} 
+        of {{ totalElements }} loans
+      </div>
+      
+      <div class="pagination-controls">
+        <button 
+          class="pagination-btn" 
+          (click)="previousPage()" 
+          [disabled]="currentPage === 0">
+          ← Previous
+        </button>
+        
+        <div class="page-numbers">
+          <button 
+            *ngFor="let page of getPageNumbers()" 
+            class="page-btn"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)">
+            {{ page + 1 }}
+          </button>
+        </div>
+        
+        <button 
+          class="pagination-btn" 
+          (click)="nextPage()" 
+          [disabled]="currentPage === totalPages - 1">
+          Next →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing Panel -->
+  <div *ngIf="pricingLoan" class="pricing-card">
+    <h4>Loan Pricing</h4>
+
+    <div class="form-group">
+      <label>Base Rate (%)</label>
+      <input type="number" [(ngModel)]="baseRate">
+    </div>
+
+    <div class="form-group">
+      <label>Credit Rating</label>
+      <select [(ngModel)]="creditRating">
+        <option value="AAA">AAA</option>
+        <option value="AA">AA</option>
+        <option value="A">A</option>
+        <option value="BBB">BBB</option>
+      </select>
+    </div>
+
+    <div class="pricing-actions">
+      <button class="btn approve" (click)="calculatePrice()">Calculate</button>
+      <button class="btn cancel" (click)="cancelPricing()">Cancel</button>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,99 @@
+:host {
+  display: flex;
+  justify-content: center;   
+  padding: 24px;
+  background: #f4f6f9;
+  min-height: calc(100vh - 56px);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Wrapper to keep title + card aligned */
+.page-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;       
+}
+
+/* Page title */
+h2 {
+  width: 100%;
+  max-width: 520px;
+  margin-bottom: 20px;
+  color: #203a43;
+  font-weight: 600;
+}
+
+/* Card container */
+.loan-card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  padding: 24px 26px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* Error message */
+.error-msg {
+  background: #fdecea;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+/* Form fields */
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #37474f;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #cfd8dc;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2c5364;
+  box-shadow: 0 0 0 2px rgba(44, 83, 100, 0.15);
+}
+
+/* Actions – CENTERED BUTTON */
+.actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;   
+}
+
+button {
+  padding: 10px 26px;
+  background: #2c5364;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background: #203a43;
+}
+
+button:active {
+  transform: scale(0.98);
+}

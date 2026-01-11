@@ -1,0 +1,63 @@
+.app-header {
+  height: 60px;
+  background: #0f2027;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.router-link-active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info {
+  font-size: 13px;
+  color: #ccc;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #ffffff;
+  color: #0f2027;
+}

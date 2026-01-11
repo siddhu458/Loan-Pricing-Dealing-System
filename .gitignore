@@ -1,0 +1,14 @@
+# ===== FRONTEND =====
+node_modules/
+dist/
+.angular/
+
+# ===== BACKEND =====
+target/
+
+# ===== IDE / OS =====
+.vscode/
+.settings/
+.project
+.classpath
+.DS_Store

@@ -1,0 +1,51 @@
+<div class="page-container">
+  <h2>Create Loan</h2>
+  <div class="loan-card">
+
+  <div *ngIf="error" class="error-msg">
+    {{ error }}
+  </div>
+
+  <div class="form-group">
+    <label>Client Name</label>
+    <input
+      placeholder="Enter client name"
+      [(ngModel)]="loan.clientName">
+  </div>
+
+  <div class="form-group">
+    <label>Loan Type</label>
+    <input
+      placeholder="Personal / Business"
+      [(ngModel)]="loan.loanType">
+  </div>
+
+  <div class="form-group">
+    <label>Requested Amount (₹)</label>
+    <input
+      type="number"
+      placeholder="Enter amount"
+      [(ngModel)]="loan.requestedAmount">
+  </div>
+
+  <div class="form-group">
+    <label>Proposed Interest Rate (%)</label>
+    <input
+      type="number"
+      placeholder="Interest rate"
+      [(ngModel)]="loan.proposedInterestRate">
+  </div>
+
+  <div class="form-group">
+    <label>Tenure (Months)</label>
+    <input
+      type="number"
+      placeholder="Loan tenure"
+      [(ngModel)]="loan.tenureMonths">
+  </div>
+
+  <div class="actions">
+    <button (click)="submit()" [disabled]="!isFormValid()">Submit Loan</button>
+  </div>
+</div>
+</div>

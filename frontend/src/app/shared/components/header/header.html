@@ -1,0 +1,17 @@
+<header class="app-header">
+  <div class="logo">
+    Corporate Banking
+  </div>
+
+  <nav class="nav-menu" *ngIf="tokenService.isLoggedIn()">
+    <a routerLink="/loans" class="nav-link">Loans</a>
+    <a routerLink="/admin" class="nav-link" *ngIf="tokenService.isAdmin()">Admin</a>
+  </nav>
+
+  <div class="header-right" *ngIf="tokenService.isLoggedIn()">
+    <span class="user-info">{{ tokenService.getUserEmail() }} ({{ tokenService.getUserRole() }})</span>
+    <button class="logout-btn" (click)="logout()">
+      Logout
+    </button>
+  </div>
+</header>

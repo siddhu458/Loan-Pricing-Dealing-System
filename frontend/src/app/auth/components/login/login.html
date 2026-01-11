@@ -1,0 +1,64 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <h2>Corporate Banking Login</h2>
+    <p class="subtitle">Loan Pricing & Deal Approval System</p>
+
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+      <!-- Email -->
+      <div class="form-group">
+        <input
+          type="email"
+          placeholder="Email Address"
+          formControlName="email"
+        />
+
+        <small class="validation-error"
+          *ngIf="email?.touched && email?.invalid">
+          <span *ngIf="email?.errors?.['required']">
+            Email is required
+          </span>
+          <span *ngIf="email?.errors?.['email']">
+            Enter a valid email address
+          </span>
+        </small>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <input
+          type="password"
+          placeholder="Password"
+          formControlName="password"
+        />
+
+        <small class="validation-error"
+          *ngIf="password?.touched && password?.invalid">
+          <span *ngIf="password?.errors?.['required']">
+            Password is required
+          </span>
+          <span *ngIf="password?.errors?.['minlength']">
+            Password must be at least 6 characters
+          </span>
+        </small>
+      </div>
+
+      <!-- Button -->
+      <button
+        class="login-btn"
+        type="submit"
+        [disabled]="loginForm.invalid">
+        Login
+      </button>
+
+      <div class="forgot-password">
+        <a href="javascript:void(0)">Forgot password?</a>
+      </div>
+
+    </form>
+  </div>
+</div>

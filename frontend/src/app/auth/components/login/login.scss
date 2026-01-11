@@ -1,0 +1,102 @@
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-card {
+  width: 360px;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 6px;
+  color: #0f2027;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.error {
+  background: #ffe5e5;
+  color: #c62828;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2c5364;
+  box-shadow: 0 0 0 2px rgba(44, 83, 100, 0.15);
+}
+
+.validation-error {
+  color: #c62828;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #2c5364;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-btn:hover:not(:disabled) {
+  background: #203a43;
+}
+
+.login-btn:disabled {
+  background: #9fb3bf;
+  cursor: not-allowed;
+}
+
+.forgot-password {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.forgot-password a {
+  font-size: 12px;
+  color: #2c5364;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
