@@ -231,7 +231,7 @@ Ensure the following are installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/SiddhuChaparthi/Loan-pricing-and-dealing-system.git
+https://github.com/siddhu458/Loan-Pricing-Dealing-System.git
 ```
 
 ### 2. Project Structure
